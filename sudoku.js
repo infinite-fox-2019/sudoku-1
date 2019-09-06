@@ -50,8 +50,8 @@ class Sudoku {
 
   cekKotak (dataK, rowK, colK, k){
     for (let i = 0; i < 9; i++){
-      const rowKotak3 = 3 * Math.floor(rowK / 3) + Math.floor(i / 3);
-      const colKotak3 = 3 * Math.floor(colK / 3) + i % 3;
+      const rowKotak3 = 3 * Math.floor(rowK / 3)
+      const colKotak3 = 3 * Math.floor(colK / 3) 
       if ( dataK [rowKotak3] [colKotak3] == k){
         return true
       }
