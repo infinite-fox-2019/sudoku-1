@@ -6,7 +6,10 @@ class Sudoku {
   solve() {}
 
   // Returns a string representing the current state of the board
-  board() {}
+  board() {
+    let board = board_string
+    
+  }
 }
 
 // The file has newlines at the end of each line,
