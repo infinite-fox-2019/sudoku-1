@@ -9,16 +9,16 @@ class Sudoku {
     let tracking = [];
     let data = {};
 
-    // console.log(board);
     for (let i = 0; i < 9; i++) {
       for (let j = 0; j < 9; j++) {
         if (board[i][j] === " ") {
           for (let k = 1; k < 10; k++) {
-            if (this.checkHorizontal(k, i, j, board)) {
+            if (this.check(k, i, j, board)) {
               board[i][j] = String(k);
-              console.clear()
-              console.log(board)
-              sleep(50)
+              // console.clear()
+              // console.log(tracking)
+              // console.log(board)
+              // sleep(200)
               data.i = i;
               data.j = j;
               data.value = k;
@@ -26,7 +26,14 @@ class Sudoku {
               data = {};
               break;
             }
-            if (k === 9) {
+            if ( k >= 9 ) {
+              k = tracking[tracking.length-1].value
+              i = tracking[tracking.length-1].i
+              j = tracking[tracking.length - 1].j;
+              board[i][j] = " ";
+              tracking.pop();
+            }
+            if ( k >= 9){
               k = tracking[tracking.length-1].value
               i = tracking[tracking.length-1].i
               j = tracking[tracking.length - 1].j;
@@ -37,19 +44,14 @@ class Sudoku {
         }
       }
     }
-    console.log(board);
+    console.log(board)
   }
 
-  checkHorizontal(input, row, col, board) {
+  check(input, row, col, board) {
     for (let i = 0; i < 9; i++) {
       let ver = Math.floor(row / 3) * 3 + Math.floor(i / 3);
       let hor = Math.floor(col / 3) * 3 + (i % 3);
-
-      if (
-        board[row][i] == input ||
-        board[i][col] == input ||
-        board[ver][hor] == input
-      ) {
+      if (board[row][i] == input || board[i][col] == input || board[ver][hor] == input) {
         return false;
       }
     }
