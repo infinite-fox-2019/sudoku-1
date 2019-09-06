@@ -15,10 +15,9 @@ class Sudoku {
           for (let k = 1; k < 10; k++) {
             if (this.check(k, i, j, board)) {
               board[i][j] = String(k);
-              // console.clear()
-              // console.log(tracking)
-              // console.log(board)
-              // sleep(200)
+              console.clear()
+              console.log(board)
+              sleep(100)
               data.i = i;
               data.j = j;
               data.value = k;
@@ -44,7 +43,7 @@ class Sudoku {
         }
       }
     }
-    console.log(board)
+    // console.log(board)
   }
 
   check(input, row, col, board) {
