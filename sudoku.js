@@ -50,19 +50,7 @@ class Sudoku {
   solve() {
     for(let i = 0 ; i<this.kosong.length ; i++){
       let num = 1
-      while(num <= 10){
-        if (num == 10){
-          let now = this.history[this.history.length-1]
-          while (now[2] == 9){
-            this.hapus(now[0])
-            this.history.pop()
-            now = this.history[this.history.length-1]
-        }
-          num = now[2] + 1
-          i = now[1]
-          this.hapus(now[0])
-          this.history.pop()
-        }
+      while(num <= 9){
         if (this.cekHorizontal(this.kosong[i], num) == false){
           num++
         }
@@ -76,6 +64,18 @@ class Sudoku {
           this.cetak(this.kosong[i], num)
           this.history.push([this.kosong[i], i, num])
           break
+        }
+        if (num == 10){
+          let now = this.history[this.history.length-1]
+          while (now[2] == 9){
+            this.hapus(now[0])
+            this.history.pop()
+            now = this.history[this.history.length-1]
+          }
+          num = now[2] + 1
+          i = now[1]
+          this.hapus(now[0])
+          this.history.pop()
         }
       }
       clearScreen()
@@ -123,7 +123,7 @@ function sleep(milliseconds) {
 var fs = require('fs')
 var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
   .toString()
-  .split("\n")[1]
+  .split("\n")[0]
 
 var game = new Sudoku(board_string)
 
