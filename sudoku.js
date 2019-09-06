@@ -9,7 +9,7 @@ class Sudoku {
     let tracking = [];
     let data = {};
 
-    console.log(board);
+    // console.log(board);
     for (let i = 0; i < 9; i++) {
       for (let j = 0; j < 9; j++) {
         if (board[i][j] === " ") {
@@ -18,7 +18,7 @@ class Sudoku {
               board[i][j] = String(k);
               console.clear()
               console.log(board)
-              sleep(600)
+              sleep(50)
               data.i = i;
               data.j = j;
               data.value = k;
@@ -27,20 +27,16 @@ class Sudoku {
               break;
             }
             if (k === 9) {
-              tracking.pop();
-              console.log(i, j,k);
-              console.log(tracking[tracking.length - 1]);
-              // k = tracking[tracking.length-1].value
-              // i = tracking[tracking.length-1].i
-              // j = tracking[tracking.length - 1].j;
-              console.log(i, j, k, "s");
+              k = tracking[tracking.length-1].value
+              i = tracking[tracking.length-1].i
+              j = tracking[tracking.length - 1].j;
               board[i][j] = " ";
+              tracking.pop();
             }
           }
         }
       }
     }
-    // console.log(tracking);
     console.log(board);
   }
 
