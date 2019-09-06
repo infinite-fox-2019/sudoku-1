@@ -3,38 +3,57 @@
 class Sudoku {
   constructor(board_string) {}
 
-
   solve() {
     let board = this.board();
-    
-    let tracking = {
-      i : '',
-      j : '',
-      value : ''
-    } 
 
+    let tracking = [];
+    let data = {};
 
+    console.log(board);
     for (let i = 0; i < 9; i++) {
       for (let j = 0; j < 9; j++) {
         if (board[i][j] === " ") {
           for (let k = 1; k < 10; k++) {
             if (this.checkHorizontal(k, i, j, board)) {
               board[i][j] = String(k);
+              console.clear()
+              console.log(board)
+              sleep(600)
+              data.i = i;
+              data.j = j;
+              data.value = k;
+              tracking.push(data);
+              data = {};
+              break;
+            }
+            if (k === 9) {
+              tracking.pop();
+              console.log(i, j,k);
+              console.log(tracking[tracking.length - 1]);
+              // k = tracking[tracking.length-1].value
+              // i = tracking[tracking.length-1].i
+              // j = tracking[tracking.length - 1].j;
+              console.log(i, j, k, "s");
+              board[i][j] = " ";
             }
           }
         }
       }
     }
-    // break; 
+    // console.log(tracking);
     console.log(board);
   }
 
   checkHorizontal(input, row, col, board) {
     for (let i = 0; i < 9; i++) {
-      let ver = Math.floor(row/3)*3 + Math.floor(i/3);
-      let hor = Math.floor(col/3)*3 + i%3;
+      let ver = Math.floor(row / 3) * 3 + Math.floor(i / 3);
+      let hor = Math.floor(col / 3) * 3 + (i % 3);
 
-      if (board[row][i] == input || board[i][col] == input || board[ver][hor] == input) {
+      if (
+        board[row][i] == input ||
+        board[i][col] == input ||
+        board[ver][hor] == input
+      ) {
         return false;
       }
     }
@@ -77,6 +96,16 @@ var board_string = fs
   .split("\n")[0];
 
 var game = new Sudoku(board_string);
+
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if (new Date().getTime() - start > milliseconds) {
+      break;
+    }
+  }
+}
+
 
 // Remember: this will just fill out what it can and not "guess"
 game.solve();
