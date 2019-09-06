@@ -25,14 +25,7 @@ class Sudoku {
               data = {};
               break;
             }
-            if ( k >= 9 ) {
-              k = tracking[tracking.length-1].value
-              i = tracking[tracking.length-1].i
-              j = tracking[tracking.length - 1].j;
-              board[i][j] = " ";
-              tracking.pop();
-            }
-            if ( k >= 9){
+            while ( k >= 9 ) {
               k = tracking[tracking.length-1].value
               i = tracking[tracking.length-1].i
               j = tracking[tracking.length - 1].j;
@@ -90,7 +83,7 @@ var fs = require("fs");
 var board_string = fs
   .readFileSync("set-01_sample.unsolved.txt")
   .toString()
-  .split("\n")[0];
+  .split("\n")[1];
 
 var game = new Sudoku(board_string);
 
