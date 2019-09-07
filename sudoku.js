@@ -123,10 +123,10 @@ class Sudoku {
 // so we call split to remove it (\n)
 var fs = require('fs')
 
-for (let i = 0; i < 50; i++) {
-  var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
+for (let i = 0; i < 14; i++) {
+  var board_string = fs.readFileSync('set-02_project-euler_50-easy-puzzles.txt')
     .toString()
-    .split("\n")[0]
+    .split("\n")[i]
 
   var game = new Sudoku(board_string)
   console.log(`--------------(${i + 1})----------------`)
