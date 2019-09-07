@@ -63,9 +63,9 @@ class Sudoku {
     }
     // uncomment the line below to animate process
     // this.clearScreen();
-    // if(!isSolvable) {
-    //   console.log('No solution!');
-    // }
+    if(!isSolvable) {
+      console.log('No solution!');
+    }
   }
 
   isValidSolution(x, y, num) {
