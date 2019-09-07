@@ -1,4 +1,6 @@
 "use strict"
+let history = []
+let checker = 0;
 
 class Sudoku {
   constructor(board_string) {
@@ -84,25 +86,41 @@ class Sudoku {
   solve(obj) {
     let koordinat = obj.empty[0];
     for(let i = 1; i<10; i++){
-      if(this.horizontalChecker(i, koordinat, obj.board)){
-        if(this.verticalChecker(i, koordinat, obj.board)){
-          if(this.boxChecker(i, koordinat, obj.board)){
-            obj.board[koordinat[0]][koordinat[1]] = i.toString();
-            obj.empty.shift();
-            return obj;
-          }
+        let angka = i+checker;
+        if(angka>9){
+            obj.empty.unshift(history[history.length-1].koordinat)
+            checker = history[history.length-1].angka;
+            obj.board[history[history.length-1].koordinat[0]][history[history.length-1].koordinat[1]] = 'X'
+            history.pop();
+            return this.solve(obj)
         }
-      }
+        else{
+            if(this.horizontalChecker(angka, koordinat, obj.board)){
+                if(this.verticalChecker(angka, koordinat, obj.board)){
+                    if(this.boxChecker(angka, koordinat, obj.board)){
+                    obj.board[koordinat[0]][koordinat[1]] = angka.toString();
+                    checker = 0;
+                    history.push({
+                        koordinat,
+                        angka
+                    });
+                    obj.empty.shift();
+                    return obj;
+                    }
+                }
+            }   
+        }
     }
-    obj.board[koordinat[0]][koordinat[1]] = 'X';
-    obj.empty.shift();
-    return obj
+    
+    obj.empty.unshift(history[history.length-1].koordinat)
+    obj.board[history[history.length-1].koordinat[0]][history[history.length-1].koordinat[1]] = 'X'
+    checker = history[history.length-1].angka;
+    history.pop();
+    return this.solve(obj)
   }
   
   // Returns a string representing the current state of the board
   board() {
-    console.log(this.obj.empty);
-    
     console.log(this.obj.board);
   }
 }
@@ -118,108 +136,35 @@ var game = new Sudoku(board_string)
 
 check(game);
 
-// ecker(angka, koordinat, board){
-  function check(game){
-    while(game.obj.empty.length >0){
-      game.solve(game.obj)
-      game.board(game.obj.board)
+function sleep (milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds) {
+      break;
     }
   }
+}
+function clearScreen () {
+  // Un-comment this line if you have trouble with console.clear();
+  // return process.stdout.write('\033c');
+  console.clear();
+}
+
+
+function check(game){
+  clearScreen()
+  console.log(game.unsolvedBoard);
+  sleep(500);
+  while(game.obj.empty.length >0){
+    clearScreen()
+    game.solve(game.obj)
+    game.board(game.obj.board)
+    sleep(100);
+  }
+}
   
   // console.log(game);
   
   // Remember: this will just fill out what it can and not "guess"
   // game.solve()
   // console.log(game.unsolvedBoard)
-  
-  // =====================================================================
-  // checker box ribet
-  // if(koordinat[0] < 3){
-  //   if(koordinat[1] < 3){
-  //     for(let i = 0; i<3; i++){
-  //       for(let j = 0; j<3; j++){
-  //         if(angka == board[i][j]){
-  //           return false;
-  //         }
-  //       }
-  //     }
-  //   }
-  //   else if(koordinat[1] > 5){
-  //     for(let i = 0; i<3; i++){
-  //       for(let j = 6; j<9; j++){
-  //         if(angka == board[i][j]){
-  //           return false;
-  //         }
-  //       }
-  //     }
-  //   }
-  //   else{
-  //     for(let i = 0; i<3; i++){
-  //       for(let j = 3; j<6; j++){
-  //         if(angka == board[i][j]){
-  //           return false;
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-  // else if(koordinat[0] > 5){
-  //   if(koordinat[1] < 3){
-  //     for(let i = 6; i<9; i++){
-  //       for(let j = 0; j<3; j++){
-  //         if(angka == board[i][j]){
-  //           return false;
-  //         }
-  //       }
-  //     }
-  //   }
-  //   else if(koordinat[1] > 5){
-  //     for(let i = 6; i<9; i++){
-  //       for(let j = 6; j<9; j++){
-  //         if(angka == board[i][j]){
-  //           return false;
-  //         }
-  //       }
-  //     }
-  //   }
-  //   else{
-  //     for(let i = 6; i<9; i++){
-  //       for(let j = 3; j<6; j++){
-  //         if(angka == board[i][j]){
-  //           return false;
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-  // else{
-  //   if(koordinat[1] < 3){
-  //     for(let i = 3; i<6; i++){
-  //       for(let j = 0; j<3; j++){
-  //         if(angka == board[i][j]){
-  //           return false;
-  //         }
-  //       }
-  //     }
-  //   }
-  //   else if(koordinat[1] > 5){
-  //     for(let i = 3; i<6; i++){
-  //       for(let j = 6; j<9; j++){
-  //         if(angka == board[i][j]){
-  //           return false;
-  //         }
-  //       }
-  //     }
-  //   }
-  //   else{
-  //     for(let i = 3; i<6; i++){
-  //       for(let j = 3; j<6; j++){
-  //         if(angka == board[i][j]){
-  //           return false;
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
