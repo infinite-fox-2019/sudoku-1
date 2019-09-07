@@ -4,6 +4,10 @@ class Sudoku {
   constructor(board_string) {
     this.boardString = board_string
     this.history = []
+    this.board = []
+    this.newGame()
+    this.empty = []
+    this.findEmpty()
   }
 
   newGame(){
@@ -14,23 +18,20 @@ class Sudoku {
       for(let j=i ; j<9+i ; j++){
       penampung.push(string[j])
       }
-    start.push(penampung)
+    this.board.push(penampung)
     }
-    return start
   }
 
   findEmpty(){
-    let sudokuArr = this.newGame()
+    let sudokuArr = this.board
     let empty = []
     for(let i=0; i<sudokuArr.length ; i++){
-      let penampung = []
       for(let j=0 ; j<sudokuArr.length ; j++){
         if(sudokuArr[i][j] === '0'){
-          empty.push([i,j])
+          this.empty.push([i,j])
         }
       }
     }
-    return empty
   }
 
   horizontalCheck(posI, posJ, value, boards){
@@ -73,47 +74,60 @@ class Sudoku {
   }
 
   insertNum(posI, posJ, value){
-    this.newGame()[posI][posJ] = String(value)
+    this.board[posI][posJ] = String(value)
   }
 
   deleteNum(posI, posJ){
-    this.newGame()[posI][posJ] = ' '
+    this.board[posI][posJ] = '0'
   }
 
-  solve() {
-    for(let i =0 ; i<this.findEmpty().length; i++){
+  solveNaive() {
+    for(let i =0 ; i<this.empty.length; i++){
       let num = 1
       while(num <= 9){
-        if(this.isOkay(this.findEmpty()[i][0], this.findEmpty()[i][1], num, this.newGame()) == false){
+        if(this.isOkay(this.empty[i][0], this.empty[i][1], num, this.board) == false){
           num ++
         } else {
-          this.insertNum(this.findEmpty()[i][0], this.findEmpty()[i][1], num)
-          this.history.push([this.findEmpty()[i][0], this.findEmpty()[i][1], num])
+          this.insertNum(this.empty[i][0], this.empty[i][1], num)
+        }
+      }
+      clearScreen()
+      console.log(this.board)
+      sleep(400)
+    }
+  }
+
+
+  solveBacktrack() {
+    for(let i =0 ; i<this.empty.length; i++){
+      let num = 1
+      while(num <= 9){
+        if(this.isOkay(this.empty[i][0], this.empty[i][1], num, this.board) == false){
+          num ++
+        } else {
+          this.insertNum(this.empty[i][0], this.empty[i][1], num)
+          this.history.push([this.empty[i], i, String(num)])
           break
         }
-        if(num > 10){
-          let lastest =this.history[this.history.length-1]
-          while(lastest[2] == 9){
-            this.deleteNum(lastest[0], lastest[1])
+        if(num > 9 ){
+          let finalArr = this.history[this.history.length-1]
+          while(finalArr[2] == '9'){
+            this.deleteNum(finalArr[0][0], finalArr[0][1])
             this.history.pop()
-            lastest = this.history[this.history.length-1]
           }
-          num = this.history[this.history.length-1][2]+1
-          i=this.history[this.history.length-1][1]
-          this.deleteNum(this.history[this.history.length-1][0], this.history[this.history.length-1][1])
+          num = finalArr[2]+1
+          i=finalArr[1]
+          this.deleteNum(finalArr[0][0], finalArr[0][1])
           this.history.pop()
         }
-        clearScreen()
-        console.log(this.newGame())
-        sleep(250)
       }
+      clearScreen()
+      console.log(this.board)
+      sleep(400)
     }
   }
 
   // Returns a string representing the current state of the board
-  board() {
-
-  }
 
 }
 
@@ -138,7 +152,7 @@ var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
   .split("\n")[0]
 
 var game = new Sudoku(board_string)
-console.log(game.solve())
+console.log(game.solveBacktrack())
 
 // Remember: this will just fill out what it can and not "guess"
 // game.solve()
