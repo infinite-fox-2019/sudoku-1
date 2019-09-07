@@ -7,8 +7,7 @@ class Sudoku {
   }
 
   solve() {
-
-    for (var i = 0; i < this.array_zero.length; i++) {
+    for (let i = 0; i < this.array_zero.length; i++) {
       while(true) {
         let confirm_horizontal = this.check_horizontal(this.array_zero[i].num, this.array_zero[i].col)
         let confirm_vertical = this.check_vertical(this.array_zero[i].num, this.array_zero[i].row)
@@ -21,23 +20,34 @@ class Sudoku {
           this.array_zero[i].num++
         }
       }
+      
+      if(this.array_zero[i].num > 9) {
+        this.field[this.array_zero[i].col][this.array_zero[i].row] = 0
 
-    //   if(this.array_zero[i].num > 9) {
-    //     this.field[this.array_zero[i].col][this.array_zero[i].row] = 0
+        backtrack_loop: for (let j = i - 1; j >= 0; j--) {
+          var difference = 9 - this.field[this.array_zero[j].col][this.array_zero[j].row]
+          console.log(difference);
 
-    //     backtrack_loop: for (var k = i - 1; k >= 0; k--) {
-    //       var difference = 9 - this.field[this.array_zero[k].col][this.array_zero[k].row]
+          for (var k = 0; k < difference; k++) {
+            this.array_zero[j].num++
 
-    //       for (var m = 0; m < difference; m++) {
-    //         this.array_zero[i].num++
+            let confirm_horizontal_backtrack = this.check_horizontal(this.array_zero[j].num, this.array_zero[j].col)
+            let confirm_vertical_backtrack = this.check_vertical(this.array_zero[j].num, this.array_zero[j].row)
+            let confirm_3x3_backtrack = this.check_3x3(this.array_zero[j].num, this.array_zero[j].col, this.array_zero[j].row)
 
+            if (confirm_horizontal_backtrack === true && confirm_vertical_backtrack === true && confirm_3x3_backtrack === true) {
+              i = j
+              break backtrack_loop;
+            }
+          }
 
-    //       }
-    //     }
-    //   }
-    // }
-    return this.field
-
+          if(k === difference) {
+            this.field[this.array_zero[j].col][this.array_zero[j].row] = 0
+          }
+        }
+      }
+      return this.field
+    }
   }
 
   // Returns a string representing the current state of the board
