@@ -2,130 +2,156 @@
 
 class Sudoku {
   constructor(board_string) {
-    this.board_string = board_string
-    
+      this.string = board_string
+      this.base = []
+      this.emptyBoard = []
+      this.history = []
+      this.board()
   }
-  //--------------- // GENERATE BOARD // ----------------//
+
+  checkHorizontal(indexI, number){
+    for (let i = 0; i < this.base.length; i++) {
+        if(this.base[indexI[0]][i] === String(number)){
+            return false
+        }
+    }
+    return true
+  }
+
+  checkVertical(indexJ, number){
+      for(let i = 0 ; i <this.base.length; i++){
+          if(this.base[i][indexJ[1]] === String(number)){
+              return false
+          }
+      }
+      return true
+  }
+
+  checkBox(index,number){
+      let indexI = Math.floor(index[0]/3) * 3
+      let indexJ = Math.floor(index[1]/3) * 3
+
+      for(let i = indexI ; i < indexI + 3 ; i++){
+          for(let j = indexJ ; j < indexJ + 3 ; j++){
+            if(this.base[i][j] === String(number)) {
+                return false
+            }
+          }
+      }
+      return true
+  }
+  
+  print(index,number){
+      this.base[index[0]][index[1]] = String(number);
+  }
+
+  deleteNum(index){
+      this.base[index[0]][index[1]] = ' ';
+  }
+
+  solve() {
+
+    for(let i = 0 ; i < this.emptyBoard.length; i++){
+        let num = 1
+        
+        let counter = 0
+        while (num <= 9){
+            if(this.checkHorizontal(this.emptyBoard[i],num) === false){
+                num ++
+                counter ++
+                clearScreen()
+                console.log(this.base)
+                sleep(100)
+                this.print(this.emptyBoard[i],counter)
+            }
+            else if (this.checkVertical(this.emptyBoard[i],num) === false){
+                num ++
+            }
+            else if ( this.checkBox(this.emptyBoard[i],num) === false){
+                num ++
+                
+
+            }else{
+                clearScreen()
+                console.log(this.base)
+                sleep(10)
+                this.print(this.emptyBoard[i],num)
+                this.history.push([this.emptyBoard[i],i,num])
+             
+                break
+
+            }
+            if(num === 10){
+                let index = this.history[this.history.length - 1]
+                while(index[2] === 9){
+                    this.deleteNum(index[0])
+                    this.history.pop()
+                    index = this.history[this.history.length-1]
+                }
+                counter = 0
+                this.print(this.emptyBoard[i],' ')
+                num = index[2] + 1
+                i = index[1]
+                this.deleteNum(index[0])
+                this.history.pop()
+            }
+        }
+        clearScreen()
+        console.log(this.base)
+        sleep(10)
+    }
+  }
+
+  // Returns a string representing the current state of the board
   board() {
-    let output = []
-    let counter = 0
 
-    for(let i = 0; i <this.board_string.length; i+=9){
-      output.push([])
-      for(let j = 0; j<9; j++){
-
-        if(this.board_string[i+j] === '0'){
-          output[counter].push(0)
-        }else{
-          output[counter].push(Number(this.board_string[i+j]))
-        }
-      }
-      counter++
-    }
-    
-    return output
-  }
-
-    //--------------- // SOLVE BOARD// ----------------//
-
-  solve(board) {
-    let kosong = []
-    for(let i = 0; i < board.length; i ++){
-      for(let j = 0; j < board[i].length; j++){
-        if(board[i][j] === 0)kosong.push([i,j])
-      }
-    }
-
-    let histories = []
-    for(let i = 0; i < kosong.length; i++){
-      for(let input = 1; input <= 9; input++ ){
-
-        if(check(kosong[i][0],kosong[i][1],input)){
-          // console.log(kosong[i])
-          board[kosong[i][0]][kosong[i][1]] = input
-          histories.push({
-            indexProcess : i,
-            value : input        
-          })
-          break
-        }
-
-        while( input >= 9){
-          input = histories[histories.length-1].value
-          i = histories[histories.length-1].indexProcess
-          board[kosong[i][0]][kosong[i][1]] = 0
-          histories.pop()
-        }
-
-      }
-    }
-
-    //--------------- // CHECKER // ----------------//
-    
-    function check(indexI,indexJ,value){
-      if( vertical(indexJ,value) === true &&
-          horizontal(indexI,value) === true &&
-          checkbox(indexI,indexJ,value) === true ){
-              return true
-          }
-      else return false
-      
-  
-      function vertical(indexI,value){
-          for(let i = 0; i < board.length; i++){
-            if(board[i][indexI] === value){
-              return false
+    let index = 0
+    for(let i = 0; i<9; i++){
+        this.base.push([])
+        for(let j = 0 ; j<9; j++){
+            if(this.string[index] === '0'){
+                this.base[i].push(' ')
+                this.emptyBoard.push([i,j])
+            }else{
+                this.base[i].push(this.string[index])
             }
-          }
-          return true
-      }
-      
-      function horizontal(indexJ,value){
-          for(let i = 0; i < board.length; i++){
-            if(board[indexJ][i] === value){
-              return false
-            }
-          }
-          return true
-      }
-      
-      function checkbox(row,col,value){
-          let rows = Math.floor( row / 3 ) * 3
-          let cols = Math.floor( col / 3 ) * 3
-          
-          for(let i = rows; i < rows + 3; i++){
-          for(let j = cols; j < cols + 3; j++){
-              if(board[i][j] === value)return false
-          }
-          }
-          return true
-      
-      }
-         
+            index++
+        }
     }
     
   }
-  
+}
 
+
+
+// console.log(game.board())
+function sleep (milliseconds) {
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > milliseconds) {
+            break;
+        }
+    }
+}
+
+function clearScreen () {
+    // Un-comment this line if you have trouble with console.clear();
+    // return process.stdout.write('\033c');
+    console.clear();
 }
 
 // The file has newlines at the end of each line,
 // so we call split to remove it (\n)
-var fs = require('fs')
-var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
-  .toString()
-  .split("\n")[0]
+    var fs = require('fs')
+    var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
+    .toString()
+    .split("\n")[0]
 
-var game = new Sudoku(board_string)
-
+  
+  
 // Remember: this will just fill out what it can and not "guess"
-// game.solve()
-// console.log(game.solve())
-// console.log(game.board())
-
-const board = game.board()
-console.log(game.solve(board))
-console.log(board)
-
+    var game = new Sudoku(board_string)
+    game.solve()
+    // console.log(game.board())
 
 
