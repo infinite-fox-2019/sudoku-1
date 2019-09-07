@@ -1,5 +1,5 @@
 let arr = [ 
-  [ '1', ' ', '5', '8', ' ', '2', ' ', ' ', ' ' ],
+  [ '1', '4', '5', '8', '3', '2', ' ', ' ', ' ' ],
   [ ' ', '9', ' ', ' ', '7', '6', '4', ' ', '5' ],
   [ '2', ' ', ' ', '4', ' ', ' ', '8', '1', '9' ],
   [ ' ', '1', '9', ' ', ' ', '7', '3', ' ', '6' ],
@@ -39,6 +39,10 @@ function cekKotak(array, posI, posJ, cekAngka){
   return true;
 }
 
-console.log(cekKanan(arr, 0, 1, '9'));
-console.log(cekBawah(arr, 0, 1, '9'));
-console.log(cekKotak(arr, 0, 1, '3'));
+for(let i = 1; i <= 9; i++){
+  console.log(cekKanan(arr, 0, 6, `${i}`));
+  console.log(cekBawah(arr, 0, 6, `${i}`));
+  console.log(cekKotak(arr, 0, 6, `${i}`));
+  console.log(i);
+  
+}

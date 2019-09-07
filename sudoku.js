@@ -3,9 +3,25 @@
 class Sudoku {
   constructor(board_string) {
     this.board_string = board_string
+    this.board = this.board();
   }
 
-  cekKanan(array, posI, posJ, cekAngka) {
+  sleep (milliseconds) {
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+      if ((new Date().getTime() - start) > milliseconds) {
+        break;
+      }
+    }
+  }
+
+  clearScreen () {
+    // Un-comment this line if you have trouble with console.clear();
+    // return process.stdout.write('\033c');
+    console.clear();
+  }
+
+  cekKanan(array, posI, cekAngka) {
     for(let j = 0; j < array.length; j++){
       if(array[posI][j] == cekAngka){
         return false
@@ -14,7 +30,7 @@ class Sudoku {
     return true;
   }
   
-  cekBawah(array, posI, posJ, cekAngka) {
+  cekBawah(array, posJ, cekAngka) {
     for(let i = 0; i < array.length; i++){
       if(array[i][posJ] == cekAngka){
         return false
@@ -34,69 +50,61 @@ class Sudoku {
     return true;
   }
 
-  solve() {
+  cek(posI,posJ,cekAngka){
+    let array = this.board
+    if(this.cekKanan(array,posI,cekAngka) && this.cekBawah(array,posJ,cekAngka) && this.cekKotak(array,posI,posJ,cekAngka)){
+      return true
+    }
+    return false;
+  }
 
-    // Generate board sudoku 
-    let array = []
-    let counter = 0;
-    for(let i = 0; i < 9; i++){
-      array.push([]);
-      for(let j = 0; j < 9; j++){
-        if(this.board_string[counter] == '0'){
-          array[i].push(0);
-        }
-        else{
-          array[i].push(Number(this.board_string[counter]));
-        }
-        counter++;
+  posKosong(array){
+    let output = []
+    for(let i = 0; i < array.length; i++){
+      for(let j = 0; j < array[i].length; j++){
+        if(array[i][j] == 0)output.push([i,j])
       }
     }
-    console.log(array)
+    return output;
+  }
 
-    let histori = []
-
+  cekClear(array){
     for(let i = 0; i < array.length; i++){
       for(let j = 0; j < array[i].length; j++){
         if(array[i][j] == 0){
-          for(let k = 1; k <= 9; k++){
-            if(
-              this.cekKanan(array, i, j, k) &&
-              this.cekBawah(array, i, j, k) &&
-              this.cekKotak(array, i, j, k)
-            ) {
-              array[i][j] = k
-              histori.push({
-                posI: i,
-                posJ: j,
-                value: k
-              })
-              break;
-            }
-            // if(k===9) {
-            //   console.log('K Masuk');
-            //   histori.pop();
-            //   console.log(histori[histori.length-1]);
-            //   // i = histori[histori.length-1].posI,
-            //   // j = histori[histori.length-1].posJ,
-            //   // k = histori[histori.length-1].value
-            //   array[i][j] = ' ';
-            //   console.log({i, j, k})
-            //   console.log(histori[histori.length-1]);
-            //   // break
-            // }
-
-          }
-          // array[i][j] = `${k}`
-
+          return false;
         }
       }
     }
-
-    console.log(array);
-    console.log(histori);
+    return true;
   }
 
-  // Returns a string representing the current state of the board
+  solve() {
+
+    let array = this.board;
+    let kosong = this.posKosong(array)
+    let urutanPosKosong = 0
+
+    while(!this.cekClear(array)){
+      
+      let row = kosong[urutanPosKosong][0]
+      let col = kosong[urutanPosKosong][1]
+      let num = array[row][col]
+
+      for(let k = num; k <= 9; k++){        
+        if(this.cek(row,col,k)){
+          array[row][col] = k;
+          urutanPosKosong++;
+          break;
+        }
+        else if(k == 9){
+          array[row][col] = 0
+          urutanPosKosong--
+        }
+      }
+    }
+  }
+  
   board() {
     let board = [];
     let counter = 0;
@@ -104,20 +112,22 @@ class Sudoku {
       board.push([]);
       for(let j = 0; j < 9; j++){
         if(this.board_string[counter] == '0'){
-          board[i].push(' ');
+          board[i].push(0);
         }
         else{
-          board[i].push(this.board_string[counter]);
+          board[i].push(Number(this.board_string[counter]));
         }
         counter++;
       }
     }
     return board;
   }
+
+  printBoard() {
+    console.log(this.board);
+  }
 }
 
-// The file has newlines at the end of each line,
-// so we call split to remove it (\n)
 var fs = require('fs')
 var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
   .toString()
@@ -125,7 +135,5 @@ var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
 
 var game = new Sudoku(board_string)
 
-// Remember: this will just fill out what it can and not "guess"
 game.solve()
-
-// console.log(game.board())
+game.printBoard()
