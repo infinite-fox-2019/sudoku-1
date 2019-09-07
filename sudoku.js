@@ -4,7 +4,6 @@ class Sudoku {
     this.strBoard = board_string //Soal :)
     this.sudokuBoard = this.board() //boardSudoku
     this.emptyPosition = this.cekKosong() // cek Posisi kosong
-    // this.display = '' //FAILED animation
   }
 
   //Buat Bordnya dulu biar ga pusing
@@ -48,7 +47,7 @@ class Sudoku {
   }
 
   // CEK_VERTICAL
-  cekCol(y, value){
+  cekVertical(y, value){
     // console.log(this.sudokuBoard[0]);
     for(let x = 0; x < this.sudokuBoard.length; x++){
       if(this.sudokuBoard[x][y] === value){
@@ -77,27 +76,51 @@ class Sudoku {
 
   cekValue(x, y, value){
     // console.log(value);
-    return this.cekHorizontal(x, value) && this.cekCol(y, value) && this.cekArea(x, y, value)
+    if (this.cekHorizontal(x, value) == true && this.cekVertical(y, value) == true && this.cekArea(x, y, value) == true) {
+      return true
+    } else {
+      return false
+    }
   }
 
   solve() {
+    let temp = ''
     //CEK INPUT ANGKANYA, KETIKA ANGKANYA SUDAH TERPENUHI, DI KOORDINAT SELANJUTNYA AKAN AUTO RESET DARI 1
     //AMBIL INDEX PER INDEX DARI POSISI KOORDINAT YANG UDAH KITA CARI TADI, LOOP 1 PER 1
     for(let i = 0; i < this.emptyPosition.length; i++){
       let x = this.emptyPosition[i][0]
       let y = this.emptyPosition[i][1]
       if(this.sudokuBoard[x][y] == 0){
-        for(let angkaSudoku = 1; angkaSudoku < 10; angkaSudoku++){ 
-          if(this.cekValue(x, y, angkaSudoku)){
-            this.sudokuBoard[x][y] = angkaSudoku
-            // this.finalDisplay(this.sudokuBoard)
-            let track = this.solve()
+        for(let angkaSudoku = 1; angkaSudoku < 10; angkaSudoku++){
+          this.clearScreen()
+          console.log('---------- SUDOKU -----------');
+          console.log(this.sudokuBoard); // ini untuk nampilin sudoku secara satu satu
+          console.log(`\n${temp} koordinat ${x} dan ${y}`);
+          console.log(` angka ${angkaSudoku} sudah ada belum?`);
+          this.sleep(1000)
+          
+          if(this.cekValue(x, y, angkaSudoku) == true){
+            // this.finalDisplay(this.sudokuBoard) // ini untuk nampilin hasil akhir
+            this.clearScreen()
+            this.sudokuBoard[x][y] = angkaSudoku // koordinat yang kosong di ubah jadi angka yang sudah dipilih
+            console.log('---------- SUDOKU -----------');
+            console.log(this.sudokuBoard); // ini untuk nampilin sudoku secara satu satu
+            console.log(`\ninput angka ${angkaSudoku}`);
+            this.sleep(1000)
+            
+            //Backtrack, animation process
+            let track = this.solve() //TRUE? kalau iya jalanin koordinat selanjutnya : kalau engga 
             if(track == true){
-                // console.log('masuk');
-                return true
-              }else{
-                this.sudokuBoard[x][y] = 0
-              }
+              temp = ''
+              return true
+            } else {
+              console.log(`\nangka ${angkaSudoku} salah!`);
+              console.log(` kembali ke koordinat sebelumnya`); // angka sebelumnya di tambah 1 karna angka sudoku++
+              this.sleep(6000)
+              temp = 'kembali ke'
+              this.sudokuBoard[x][y] = 0
+              i-- // mundur ke history koordinat sebelumnya
+            }
           }
         }
         return false
@@ -106,9 +129,20 @@ class Sudoku {
     return true
   }
 
-  // finalDisplay(bluePrint){
-  //   this.display = bluePrint
-  // }
+  clearScreen() {
+    // Un-comment this line if you have trouble with console.clear();
+    // return process.stdout.write('\033c');
+    console.clear();
+  }
+  
+  sleep(milliseconds) {
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+      if ((new Date().getTime() - start) > milliseconds) {
+        break;
+      }
+    }
+  }
 }
 
 // The file has newlines at the end of each line,
@@ -122,4 +156,4 @@ var game = new Sudoku(board_string)
 
 // Remember: this will just fill out what it can and not "guess"
 game.solve()
-console.log(game.sudokuBoard)
+console.log(game.board)
