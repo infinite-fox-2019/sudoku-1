@@ -45,7 +45,7 @@ class Sudoku {
             if(k === 9) {
               let prevFilledCell = this.histories.pop();
               this.board[i][j] = ' ';
-              if(prevFilledCell === undefined) {
+              if(!prevFilledCell) {
                 isSolvable = false;
                 break loopI;
               }
@@ -57,7 +57,7 @@ class Sudoku {
           // uncomment the lines below to animate process
           // this.clearScreen();
           // console.log(this.showBoard());
-          // this.sleep(40);
+          // this.sleep(100);
         }
       } 
     }
@@ -108,7 +108,34 @@ class Sudoku {
 
   // Returns a string representing the current state of the board
   showBoard() {
-    return this.board;
+    let result = '';
+    for(let i = 0; i < this.board.length; i++) {
+      if(i % 3 === 0) {
+        for(let j = 0; j < this.board.length; j++) {
+          if(j % 3 === 0 && j > 0) {
+            result += '+';
+          }
+          result += '+---'
+        }
+        result += '+\n';
+      }
+      for(let j = 0; j < this.board.length; j++) {
+        if(j % 3 === 0 && j > 0) {
+          result += '|';
+        }
+        result += 
+        `| ${this.board[i][j]} `;
+      }
+      result += '|\n';
+    }
+    for(let i = 0; i < this.board.length; i++) {
+      if(i % 3 === 0 && i > 0) {
+        result += '+';
+      }
+      result += '+---'
+    }
+    result += '+';
+    return result;
   }
 
   clearScreen() {
