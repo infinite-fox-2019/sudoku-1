@@ -19,7 +19,6 @@ class Sudoku {
       output.push(row)
     }
 
-
     return output
   }
 
@@ -78,8 +77,8 @@ class Sudoku {
 
   checkBox(num, coorI, coorJ) {
 
-    for (let i = Math.floor(coorI / 3) * 3; i < 3; i++) {
-      for (let j = Math.floor(coorJ / 3) * 3; j < 3; j++) {
+    for (let i = Math.floor(coorI / 3) * 3; i < Math.floor(coorI / 3) * 3 + 3; i++) {
+      for (let j = Math.floor(coorJ / 3) * 3; j < Math.floor(coorJ / 3) * 3 + 3; j++) {
         if (this.board[i][j] == num) {
           return false
         }
@@ -87,7 +86,6 @@ class Sudoku {
     }
     return true
   }
-
 
   checkAll(num, coorI, coorJ) {
     if (this.checkRow(num, coorI) && this.checkCol(num, coorJ) && this.checkBox(num, coorI, coorJ)) {
@@ -125,7 +123,7 @@ class Sudoku {
 // so we call split to remove it (\n)
 var fs = require('fs')
 
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < 50; i++) {
   var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
     .toString()
     .split("\n")[0]
