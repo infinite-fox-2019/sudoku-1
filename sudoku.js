@@ -15,7 +15,9 @@ class Sudoku {
         this.sleep(100);
         for (let i = 0; i < this.index.length; i++) {
             for (let angka = 1; angka < 10; angka++) {
+                //checkBacktrack
                 if (this.checkAllCondition(this.index[i][0], this.index[i][1], angka)) {
+                    //jika semua kondisi terpenuhi maka push ke backtrack
                     this.backTrack.push({
                         row: this.index[i][0],
                         col: this.index[i][1],
@@ -25,7 +27,7 @@ class Sudoku {
                     this.display[this.index[i][0]][this.index[i][1]] = String(angka);
                     break;
                 }
-
+                //cekPerValue
                 while (angka >= 9) {
                     angka = this.backTrack[this.backTrack.length - 1].value;
                     let row = this.backTrack[this.backTrack.length - 1].row;
@@ -44,9 +46,11 @@ class Sudoku {
     // Returns a string representing the current state of the board
     board() {
         let count = 0;
+        //loopBerdasarkan listBoard
         for (let i = 0; i < this.listBoard.length; i += 9) {
             this.display.push([]);
             for (let j = 0; j < 9; j++) {
+                //ketika indexnya = '0'
                 if (this.listBoard[i + j] === '0') {
                     this.display[count].push(' ');
                     this.index.push([count, j])
@@ -98,5 +102,4 @@ var game = new Sudoku(board_string)
 game.solve()
 
 //console.log(game.board())
-//console.log(game.checkVertical());
-//console.log(game.checkHorizontal());
+//console.log(checkAllCondition())
